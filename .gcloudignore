@@ -1,0 +1,11 @@
+# Keep the Cloud Build upload small and secret-free.
+.venv/
+.env
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+# DB-prototype package + its tests are not part of the deployed agent.
+risk_radar/
+tests/
+*.md
