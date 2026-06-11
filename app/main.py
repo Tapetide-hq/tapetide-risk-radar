@@ -9,15 +9,16 @@ Routes:
 
 from __future__ import annotations
 
+import json
 import os
 
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from risk_agent import settings, store
-from risk_agent.pipeline import run_risk_radar
+from risk_agent.pipeline import run_risk_radar, stream_risk_radar
 
 app = FastAPI(title="Tapetide Smart-Money Risk Radar")
 
@@ -46,6 +47,31 @@ def health() -> dict:
 @app.post("/scan")
 async def scan(req: ScanRequest) -> dict:
     return await run_risk_radar(req.user_id, req.symbols)
+
+
+@app.post("/scan/stream")
+async def scan_stream(req: ScanRequest) -> StreamingResponse:
+    """Server-Sent Events: emit real per-stage progress, then the final result.
+
+    Each event is a line `data: {json}\n\n`. Stages emit start/done/skip; the
+    final event is `{"stage":"result","data":{...}}`.
+    """
+    async def gen():
+        try:
+            async for event in stream_risk_radar(req.user_id, req.symbols):
+                yield f"data: {json.dumps(event, default=str)}\n\n"
+        except Exception as exc:  # surface failures to the client stream
+            yield f"data: {json.dumps({'stage': 'error', 'message': str(exc)})}\n\n"
+
+    return StreamingResponse(
+        gen(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 @app.post("/scheduled")
