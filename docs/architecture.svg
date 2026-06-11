@@ -1,20 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1320" height="600" viewBox="0 0 1320 600" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <defs>
     <linearGradient id="bgg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b1116"/><stop offset="1" stop-color="#080d11"/>
-    </linearGradient>
-    <linearGradient id="appg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0f1922"/><stop offset="1" stop-color="#0c141c"/>
+      <stop offset="0" stop-color="#f7faf8"/><stop offset="1" stop-color="#eef3ef"/>
     </linearGradient>
     <linearGradient id="agent" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#102019"/><stop offset="1" stop-color="#0c1814"/>
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f1faf6"/>
     </linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0d2a20" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shs" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0d2a20" flood-opacity="0.08"/>
+    </filter>
     <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
       <path d="M0,0 L9,5 L0,10 z" fill="#0EA882"/></marker>
     <marker id="arm" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0,0 L9,5 L0,10 z" fill="#3c4a56"/></marker>
+      <path d="M0,0 L9,5 L0,10 z" fill="#aab4ac"/></marker>
     <style>
-      .t{fill:#eef3f0} .m{fill:#8a9aa3} .tag{fill:#5ad9b6}
+      .t{fill:#0d1714} .m{fill:#67756d} .tag{fill:#0a7a60}
       .h{font-weight:700} .num{fill:#0EA882;font-weight:700}
     </style>
   </defs>
@@ -27,7 +30,7 @@
   <text x="59" y="60" class="m" font-size="13">Autonomous multi-agent system · Google Cloud native · Track 1 (Build)</text>
 
   <!-- triggers -->
-  <rect x="38" y="150" width="196" height="158" rx="15" fill="#121a22" stroke="#26323f"/>
+  <rect x="38" y="150" width="196" height="158" rx="15" fill="#fff" stroke="#e7eae4" filter="url(#shs)"/>
   <text x="58" y="182" class="t h" font-size="15">Triggers</text>
   <text x="58" y="210" class="t" font-size="13">Cloud Scheduler</text>
   <text x="58" y="228" class="m" font-size="11.5">08:15 &amp; 17:00 IST · cron</text>
@@ -35,37 +38,36 @@
   <text x="58" y="276" class="m" font-size="11.5">Demo UI · “Scan now”</text>
 
   <!-- app container -->
-  <rect x="264" y="120" width="790" height="248" rx="18" fill="url(#appg)" stroke="#26323f"/>
+  <rect x="264" y="120" width="790" height="248" rx="18" fill="#fbfdfb" stroke="#dfe6df" filter="url(#sh)"/>
   <text x="286" y="150" class="t h" font-size="15.5">Cloud Run · ADK multi-agent app</text>
   <text x="286" y="169" class="m" font-size="12">in-process Agent-to-Agent (A2A) handoff</text>
 
   <!-- agents row -->
-  <!-- Monitor -->
-  <rect x="286" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#1d3a30"/>
+  <rect x="286" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#cfeae0" filter="url(#shs)"/>
   <text x="304" y="222" font-size="14"><tspan class="num">1</tspan><tspan class="t h" dx="6">Monitor</tspan></text>
   <text x="304" y="244" class="m" font-size="11.5">pull smart-money</text>
   <text x="304" y="260" class="m" font-size="11.5">signals</text>
-  <!-- Catalyst -->
-  <rect x="474" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#1d3a30"/>
+
+  <rect x="474" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#cfeae0" filter="url(#shs)"/>
   <text x="492" y="222" font-size="14"><tspan class="num">2</tspan><tspan class="t h" dx="6">Catalyst</tspan></text>
   <text x="492" y="244" class="m" font-size="11.5">Gemini + Google</text>
   <text x="492" y="260" class="m" font-size="11.5">Search grounding</text>
-  <!-- Analyst -->
-  <rect x="662" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#1d3a30"/>
+
+  <rect x="662" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#cfeae0" filter="url(#shs)"/>
   <text x="680" y="222" font-size="14"><tspan class="num">3</tspan><tspan class="t h" dx="6">Analyst</tspan></text>
   <text x="680" y="244" class="m" font-size="11.5">Gemini · structured</text>
   <text x="680" y="260" class="m" font-size="11.5">output verdict</text>
-  <!-- Action -->
-  <rect x="850" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#1d3a30"/>
+
+  <rect x="850" y="188" width="172" height="104" rx="12" fill="url(#agent)" stroke="#cfeae0" filter="url(#shs)"/>
   <text x="868" y="222" font-size="14"><tspan class="num">4</tspan><tspan class="t h" dx="6">Action</tspan></text>
   <text x="868" y="244" class="m" font-size="11.5">write risk register</text>
   <text x="868" y="260" class="m" font-size="11.5">+ analytics</text>
 
-  <text x="286" y="330" class="tag" font-size="12">Vertex AI · Gemini 2.5 Flash · Secret Manager</text>
+  <text x="286" y="330" class="tag h" font-size="12">Vertex AI · Gemini 2.5 Flash · Secret Manager</text>
   <text x="286" y="349" class="m" font-size="11">structured outputs keep the autonomous pipeline crash-proof</text>
 
   <!-- data provider -->
-  <rect x="286" y="426" width="330" height="150" rx="15" fill="#121a22" stroke="#26323f"/>
+  <rect x="286" y="426" width="330" height="150" rx="15" fill="#fff" stroke="#e7eae4" filter="url(#shs)"/>
   <text x="306" y="458" class="t h" font-size="15">Market Data Provider API</text>
   <text x="306" y="478" class="m" font-size="12">external · API-key authenticated</text>
   <text x="306" y="506" class="m" font-size="11.5">6 institutional-flow signals —</text>
@@ -73,31 +75,29 @@
   <text x="306" y="542" class="m" font-size="11.5">MTF · SLBM · promoter pledge</text>
 
   <!-- firestore -->
-  <rect x="1086" y="150" width="200" height="120" rx="15" fill="#121a22" stroke="#26323f"/>
+  <rect x="1086" y="150" width="200" height="120" rx="15" fill="#fff" stroke="#e7eae4" filter="url(#shs)"/>
   <text x="1106" y="182" class="t h" font-size="15">Firestore</text>
   <text x="1106" y="205" class="m" font-size="12">risk register</text>
   <text x="1106" y="223" class="m" font-size="12">scan history · portfolios</text>
-  <text x="1106" y="249" class="tag" font-size="11">durable, queryable alerts</text>
+  <text x="1106" y="249" class="tag h" font-size="11">durable, queryable alerts</text>
 
   <!-- bigquery -->
-  <rect x="1086" y="300" width="200" height="110" rx="15" fill="#121a22" stroke="#26323f"/>
+  <rect x="1086" y="300" width="200" height="110" rx="15" fill="#fff" stroke="#e7eae4" filter="url(#shs)"/>
   <text x="1106" y="332" class="t h" font-size="15">BigQuery</text>
   <text x="1106" y="355" class="m" font-size="12">risk_radar.risk_register</text>
-  <text x="1106" y="381" class="tag" font-size="11">portfolio risk analytics</text>
+  <text x="1106" y="381" class="tag h" font-size="11">portfolio risk analytics</text>
 
   <!-- flow arrows -->
   <path d="M234,229 L280,229" fill="none" stroke="#0EA882" stroke-width="2.4" marker-end="url(#ar)"/>
-  <path d="M458,240 L470,240" fill="none" stroke="#3c4a56" stroke-width="2.2" marker-end="url(#arm)"/>
-  <path d="M646,240 L658,240" fill="none" stroke="#3c4a56" stroke-width="2.2" marker-end="url(#arm)"/>
-  <path d="M834,240 L846,240" fill="none" stroke="#3c4a56" stroke-width="2.2" marker-end="url(#arm)"/>
-  <!-- monitor -> data provider (scan) -->
+  <path d="M458,240 L470,240" fill="none" stroke="#aab4ac" stroke-width="2.2" marker-end="url(#arm)"/>
+  <path d="M646,240 L658,240" fill="none" stroke="#aab4ac" stroke-width="2.2" marker-end="url(#arm)"/>
+  <path d="M834,240 L846,240" fill="none" stroke="#aab4ac" stroke-width="2.2" marker-end="url(#arm)"/>
   <path d="M372,292 L372,422" fill="none" stroke="#0EA882" stroke-width="2.4" marker-end="url(#ar)"/>
-  <text x="384" y="392" class="tag" font-size="12">scan</text>
-  <!-- action -> firestore + bigquery -->
+  <text x="384" y="392" class="tag h" font-size="12">scan</text>
   <path d="M1022,222 C1055,210 1060,200 1084,196" fill="none" stroke="#0EA882" stroke-width="2.4" marker-end="url(#ar)"/>
   <path d="M1022,258 C1055,290 1060,330 1084,344" fill="none" stroke="#0EA882" stroke-width="2.4" marker-end="url(#ar)"/>
 
   <!-- footer -->
-  <line x1="40" y1="556" x2="616" y2="556" stroke="#1c2730"/>
+  <line x1="40" y1="556" x2="616" y2="556" stroke="#e2e7e1"/>
   <text x="660" y="590" class="m" font-size="12">Gemini · ADK · A2A · Cloud Run · Cloud Scheduler · Firestore · BigQuery · Secret Manager · Google Search grounding</text>
 </svg>
