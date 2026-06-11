@@ -13,6 +13,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from risk_agent import settings, store
@@ -21,6 +22,7 @@ from risk_agent.pipeline import run_risk_radar
 app = FastAPI(title="Tapetide Smart-Money Risk Radar")
 
 _STATIC = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=_STATIC), name="static")
 
 # Demo fallback portfolio when no stored portfolios exist yet.
 DEFAULT_WATCHLIST = ["ADANIENT", "ADANIGREEN", "RELIANCE", "JPPOWER", "RAYMOND"]
