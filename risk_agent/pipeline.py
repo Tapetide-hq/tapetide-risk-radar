@@ -13,7 +13,7 @@ from typing import Any
 from . import store
 from .agents import analyst_agent, catalyst_agent, run_agent
 from .schemas import PortfolioRiskAssessment
-from .worker_client import scan_portfolio
+from .data_client import scan_portfolio
 
 # Severities worth spending a grounding/LLM pass on.
 _NOTABLE = {"alert", "watch"}

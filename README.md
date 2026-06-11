@@ -20,11 +20,11 @@ Cloud Scheduler ─┐
             └──────────────────────────────────────────────┘
               │ tools          │ Google Search  │ Gemini      │ Firestore
               ▼                │ grounding       │ structured  ▼
-   Tapetide Risk API          ▼                 ▼          risk_register
-   (Cloudflare Worker)      Vertex AI Gemini 2.5 Flash      scan_history
+   Market Data Provider       ▼                 ▼          risk_register
+      API (external)        Vertex AI Gemini 2.5 Flash      scan_history
 ```
 
-- **Monitor** — calls the Tapetide Risk API for institutional-flow findings.
+- **Monitor** — calls the market data provider API for institutional-flow findings.
 - **Catalyst** — Gemini + built-in Google Search grounding: *why* is a stock moving.
 - **Analyst** — Gemini with a strict `output_schema`, producing a structured
   `PortfolioRiskAssessment` (parses raw pledge-disclosure text into events).
@@ -33,8 +33,8 @@ Cloud Scheduler ─┐
 **GCP services:** Vertex AI (Gemini) · Cloud Run · Firestore · Secret Manager ·
 Cloud Build · Artifact Registry · Cloud Scheduler · Google Search grounding.
 
-The market data is consumed from the **Tapetide Risk API** — a separate,
-API-key-authenticated service. No database credentials live in this app.
+The market data is consumed from an **external, API-key-authenticated market
+data provider** (`DATA_PROVIDER_BASE_URL`). No database credentials live in this app.
 
 ## API
 
@@ -54,7 +54,7 @@ curl -X POST <service-url>/scan -H 'Content-Type: application/json' \
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env            # set WORKER_API_KEY, GOOGLE_CLOUD_PROJECT, ...
+cp .env.example .env            # set DATA_PROVIDER_API_KEY, GOOGLE_CLOUD_PROJECT, ...
 gcloud auth application-default login
 .venv/bin/uvicorn app.main:app --port 8080
 ```
@@ -63,8 +63,8 @@ gcloud auth application-default login
 
 ```bash
 gcloud run deploy risk-radar --source . --region us-central1 \
-  --set-env-vars "WORKER_BASE_URL=...,GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=...,GOOGLE_CLOUD_LOCATION=us-central1,GEMINI_MODEL=gemini-2.5-flash,FIRESTORE_DATABASE=(default)" \
-  --set-secrets "WORKER_API_KEY=worker-api-key:latest"
+  --set-env-vars "DATA_PROVIDER_BASE_URL=...,GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=...,GOOGLE_CLOUD_LOCATION=us-central1,GEMINI_MODEL=gemini-2.5-flash,FIRESTORE_DATABASE=(default)" \
+  --set-secrets "DATA_PROVIDER_API_KEY=data-provider-api-key:latest"
 ```
 
 The runtime service account needs: `roles/aiplatform.user`, `roles/datastore.user`,
@@ -72,10 +72,10 @@ The runtime service account needs: `roles/aiplatform.user`, `roles/datastore.use
 
 ## Layout
 
-- `risk_agent/` — the deployed ADK app (agents, pipeline, Firestore store, Worker client).
+- `risk_agent/` — the deployed ADK app (agents, pipeline, Firestore store, data-provider client).
 - `app/` — FastAPI entrypoint for Cloud Run.
-- `risk_radar/` + `tests/` — the signal-SQL validation prototype (reference; the
-  production signal logic now lives in the Tapetide Risk API service).
+- `risk_radar/` + `tests/` — a local signal-computation prototype (reference only;
+  the production signal logic is served by the external market data provider API).
 
 ## Stack
 

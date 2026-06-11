@@ -13,10 +13,10 @@ def _get(name: str, default: str = "") -> str:
     return os.getenv(name, default).strip()
 
 
-# --- Tapetide risk API (the Cloudflare Worker = external data source) -------
-WORKER_BASE_URL: str = _get("WORKER_BASE_URL", "https://ow-apis.tapetide.com")
-WORKER_API_KEY: str = _get("WORKER_API_KEY")
-WORKER_TIMEOUT_S: float = float(_get("WORKER_TIMEOUT_S", "45"))
+# --- Market data provider API (external, API-key authenticated) ------------
+DATA_PROVIDER_BASE_URL: str = _get("DATA_PROVIDER_BASE_URL", "https://ow-apis.tapetide.com")
+DATA_PROVIDER_API_KEY: str = _get("DATA_PROVIDER_API_KEY")
+DATA_PROVIDER_TIMEOUT_S: float = float(_get("DATA_PROVIDER_TIMEOUT_S", "45"))
 
 # --- Vertex AI / Gemini -----------------------------------------------------
 # ADK reads these; set GOOGLE_GENAI_USE_VERTEXAI=TRUE to use Vertex (not API key).
