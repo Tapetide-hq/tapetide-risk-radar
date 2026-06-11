@@ -121,6 +121,16 @@
     border-radius:10px;padding:11px 13px}
   .cat b{color:var(--brand-deep);font-weight:600}
 
+  /* clear / checked box */
+  .clearbox{display:flex;align-items:center;gap:14px;padding:16px 20px;animation:rise .45s ease both}
+  .clearbox .ci{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+    background:var(--low-t);color:var(--low);font-weight:700;font-size:15px}
+  .clearbox .cw{flex:1;min-width:0}
+  .clearbox .ct{font-weight:600;font-size:14px;color:var(--ink)}
+  .clearbox .cl{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+  .clearbox .csym{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink2);
+    background:var(--surface2);border:1px solid var(--line2);border-radius:7px;padding:4px 9px}
+
   footer{margin:44px 0 60px;border-top:1px solid var(--line);padding-top:22px}
   .fg{display:flex;gap:30px;flex-wrap:wrap}
   .fg div{font-size:12.5px;color:var(--muted);max-width:230px}
@@ -188,20 +198,43 @@ addEventListener('scroll',()=>document.getElementById('bar').classList.toggle('s
 const steps=['monitor','catalyst','analyst','action'];
 const setStep=(k,c)=>{document.querySelector(`.step[data-k="${k}"]`).className='step '+c;};
 
+function handleEvent(ev){
+  if(ev.stage==='error'){document.getElementById('err').textContent='Scan failed — '+(ev.message||'unknown');return;}
+  if(ev.stage==='result')return;
+  if(steps.indexOf(ev.stage)<0)return;
+  if(ev.status==='start')setStep(ev.stage,'active');
+  else if(ev.status==='done'||ev.status==='skip')setStep(ev.stage,'done');
+}
+
 async function scan(){
   const btn=document.getElementById('scan'),err=document.getElementById('err'),
         res=document.getElementById('result'),pipe=document.getElementById('pipe');
   err.textContent='';res.innerHTML='';pipe.style.display='grid';steps.forEach(s=>setStep(s,''));
   btn.disabled=true;btn.textContent='Scanning…';
   const syms=document.getElementById('symbols').value.split(',').map(s=>s.trim()).filter(Boolean);
-  let i=0;setStep('monitor','active');
-  const tick=setInterval(()=>{if(i<steps.length-1){setStep(steps[i],'done');i++;setStep(steps[i],'active');}},1500);
+  let result=null;
   try{
-    const r=await fetch('/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbols:syms})});
-    clearInterval(tick);steps.forEach(s=>setStep(s,'done'));
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    render(await r.json());
-  }catch(e){clearInterval(tick);err.textContent='Scan failed — '+e.message;}
+    const r=await fetch('/scan/stream',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({symbols:syms})});
+    if(!r.ok||!r.body)throw new Error('HTTP '+r.status);
+    const reader=r.body.getReader(),dec=new TextDecoder();let buf='';
+    while(true){
+      const {value,done}=await reader.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      let idx;
+      while((idx=buf.indexOf('\n\n'))>=0){
+        const frame=buf.slice(0,idx);buf=buf.slice(idx+2);
+        const line=frame.split('\n').find(l=>l.startsWith('data:'));
+        if(!line)continue;
+        let ev;try{ev=JSON.parse(line.slice(5).trim());}catch{continue;}
+        handleEvent(ev);
+        if(ev.stage==='result')result=ev.data;
+      }
+    }
+    if(!result)throw new Error('no result received');
+    render(result);
+  }catch(e){steps.forEach(s=>{});err.textContent='Scan failed — '+e.message;}
   finally{btn.disabled=false;btn.textContent='Run Risk Scan';}
 }
 document.getElementById('scan').onclick=scan;
@@ -209,12 +242,14 @@ document.getElementById('scan').onclick=scan;
 function render(d){
   const a=d.assessment||{},c=d.counts||{},score=a.portfolio_risk_score||0;
   const stocks=(a.stocks||[]).slice().sort((x,y)=>y.risk_score-x.risk_score);
+  const clear=d.clear_symbols||[];
+  const scanned=(d.scanned_symbols||[]).length;
   const vc=score>=75?'var(--crit)':score>=55?'var(--high)':score>=35?'var(--med)':'var(--low)';
   let h=`<div class="panel verdict">
     <div class="score"><div class="v" style="color:${vc}">${score}<span class="of">/100</span></div><div class="lab">Portfolio risk</div></div>
     <div class="vmid"><div class="headline">${esc(a.headline||'No notable smart-money risk detected today.')}</div>
       <div class="meter"><i style="left:${Math.min(100,Math.max(0,score))}%"></i></div>
-      <div class="stats"><span class="stat"><b>${c.alert||0}</b> alerts</span><span class="stat"><b>${c.watch||0}</b> watches</span><span class="stat"><b>${stocks.length}</b> flagged holdings</span></div>
+      <div class="stats"><span class="stat"><b>${scanned}</b> scanned</span><span class="stat"><b>${c.alert||0}</b> alerts</span><span class="stat"><b>${c.watch||0}</b> watches</span><span class="stat"><b>${stocks.length}</b> flagged</span></div>
     </div></div>`;
   if(stocks.length){
     h+=`<div class="sec">Flagged holdings · ${stocks.length}</div><div class="rows">`;
@@ -227,6 +262,13 @@ function render(d){
         ${s.catalyst?`<div class="cat"><b>Catalyst —</b> ${esc(s.catalyst)}</div>`:''}
       </div>`;});
     h+='</div>';
+  }
+  if(clear.length){
+    h+=`<div class="sec">Checked &amp; clear · ${clear.length}</div>
+      <div class="panel clearbox"><span class="ci">✓</span><div class="cw">
+        <div class="ct">No notable smart-money signals</div>
+        <div class="cl">${clear.map(s=>`<span class="csym">${esc(s)}</span>`).join('')}</div>
+      </div></div>`;
   }
   document.getElementById('result').innerHTML=h;
 }
