@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tapetide · Smart-Money Risk Radar</title>
+<style>
+  :root{
+    --bg:#0a0f0d; --panel:#101714; --panel2:#0d1411; --line:#1e2a25;
+    --ink:#e8efe9; --muted:#8aa39a; --brand:#0EA882; --brand-dim:#0b7d62;
+    --alert:#ef4444; --high:#f97316; --medium:#eab308; --low:#0EA882;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#0f201a 0,var(--bg) 55%);
+    color:var(--ink);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif}
+  a{color:var(--brand)}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px}
+  .dot{width:13px;height:13px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px rgba(14,168,130,.15)}
+  .brand h1{font-size:17px;margin:0;letter-spacing:.2px;font-weight:650}
+  .brand span{color:var(--muted);font-size:12px}
+  .pill{font-size:11px;color:var(--brand);border:1px solid var(--brand-dim);
+    padding:4px 10px;border-radius:999px;background:rgba(14,168,130,.08)}
+  .tagline{color:var(--muted);margin:14px 0 22px;max-width:680px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+    border-radius:14px;padding:18px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input[type=text]{flex:1;min-width:260px;background:#0a110e;border:1px solid var(--line);
+    color:var(--ink);border-radius:10px;padding:12px 14px;font-size:14px;outline:none}
+  input[type=text]:focus{border-color:var(--brand-dim)}
+  button{background:var(--brand);color:#04140f;border:0;border-radius:10px;padding:12px 20px;
+    font-weight:700;cursor:pointer;font-size:14px}
+  button:disabled{opacity:.55;cursor:wait}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+  .chip{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:8px;
+    padding:4px 9px;cursor:pointer;background:#0a110e}
+  .chip:hover{border-color:var(--brand-dim);color:var(--ink)}
+  /* pipeline */
+  .pipe{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}
+  .stage{flex:1;min-width:150px;border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:#0a110e;opacity:.5;transition:.35s}
+  .stage.active{opacity:1;border-color:var(--brand-dim);box-shadow:0 0 0 1px rgba(14,168,130,.25)}
+  .stage.done{opacity:1;border-color:#1c3a30}
+  .stage .s-t{font-weight:650;font-size:13px}
+  .stage .s-d{color:var(--muted);font-size:11.5px;margin-top:3px}
+  .stage .s-i{font-size:11px;margin-top:6px;color:var(--brand)}
+  /* score */
+  .summary{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .ring{--p:0;width:104px;height:104px;border-radius:50%;flex:none;
+    background:conic-gradient(var(--rc,var(--brand)) calc(var(--p)*1%),#16211c 0);
+    display:grid;place-items:center}
+  .ring > div{width:80px;height:80px;border-radius:50%;background:var(--panel);display:grid;place-items:center;text-align:center}
+  .ring b{font-size:26px;line-height:1}.ring small{color:var(--muted);font-size:10px}
+  .headline{font-size:16px;font-weight:600;max-width:560px}
+  .counts{display:flex;gap:14px;margin-top:8px;color:var(--muted);font-size:12.5px}
+  .counts b{color:var(--ink)}
+  /* stock cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:18px}
+  .stk{border:1px solid var(--line);border-radius:13px;padding:16px;background:#0a110e;border-left-width:4px}
+  .stk-h{display:flex;align-items:center;justify-content:space-between}
+  .sym{font-weight:750;font-size:16px;letter-spacing:.3px}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:7px}
+  .score{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;margin-top:2px}
+  .thesis{color:#cfe0d8;margin:10px 0;font-size:13px}
+  .sigs{display:flex;gap:6px;flex-wrap:wrap}
+  .sig{font-size:10.5px;background:#10211b;color:#9fe3cd;border:1px solid #1d3a30;padding:3px 8px;border-radius:6px}
+  .cat{margin-top:10px;font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:9px}
+  .cat b{color:#cbd9d2;font-weight:600}
+  footer{margin-top:26px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+  .foot-grid{display:flex;gap:22px;flex-wrap:wrap}
+  .disc{margin-top:10px;font-size:11px;color:#5f756c}
+  .err{color:#fca5a5;margin-top:12px;font-size:13px}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="dot"></span>
+      <div><h1>Tapetide · Smart-Money Risk Radar</h1>
+      <span>Autonomous multi-agent risk monitoring for Indian equities</span></div>
+    </div>
+    <span class="pill">● Powered by Gemini · ADK · Cloud Run</span>
+  </header>
+
+  <p class="tagline">Hand it a portfolio. A multi-agent team scans institutional
+    smart-money signals, grounds the “why” with live search, and writes a
+    risk verdict — flagging distribution <em>before</em> the crash.</p>
+
+  <div class="card">
+    <div class="controls">
+      <input id="symbols" type="text" value="ADANIENT, ADANIGREEN, RELIANCE, JPPOWER, RAYMOND" />
+      <button id="scan">Scan Now</button>
+    </div>
+    <div class="chips" id="presets"></div>
+
+    <div class="pipe" id="pipe" style="display:none">
+      <div class="stage" data-k="monitor"><div class="s-t">1 · Monitor</div><div class="s-d">Pull smart-money signals</div><div class="s-i"></div></div>
+      <div class="stage" data-k="catalyst"><div class="s-t">2 · Catalyst</div><div class="s-d">Ground “why” (Google Search)</div><div class="s-i"></div></div>
+      <div class="stage" data-k="analyst"><div class="s-t">3 · Analyst</div><div class="s-d">Gemini cross-signal verdict</div><div class="s-i"></div></div>
+      <div class="stage" data-k="action"><div class="s-t">4 · Action</div><div class="s-d">Write risk register</div><div class="s-i"></div></div>
+    </div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <footer>
+    <div class="foot-grid">
+      <div><b style="color:var(--ink)">Autonomy</b><br/>Scheduled scans 08:15 &amp; 17:00 IST (Cloud Scheduler)</div>
+      <div><b style="color:var(--ink)">State</b><br/>Alerts persisted to Firestore + BigQuery</div>
+      <div><b style="color:var(--ink)">Data</b><br/>Institutional flows for ~8,200 NSE/BSE stocks</div>
+    </div>
+    <div class="disc">For research and informational purposes only. Not investment advice. Signals describe institutional activity; they are not buy/sell recommendations.</div>
+  </footer>
+</div>
+
+<script>
+const PRESETS = {
+  "Adani complex":"ADANIENT, ADANIGREEN, ADANIPOWER, AMBUJACEM",
+  "Large caps":"RELIANCE, TCS, HDFCBANK, INFY, SBIN",
+  "Pledge watch":"RAYMOND, JPPOWER, MANAPPURAM, INOXWIND",
+};
+const RC = {critical:"var(--alert)",high:"var(--high)",medium:"var(--medium)",low:"var(--low)"};
+const pres = document.getElementById('presets');
+Object.entries(PRESETS).forEach(([k,v])=>{const c=document.createElement('span');c.className='chip';c.textContent=k;c.onclick=()=>document.getElementById('symbols').value=v;pres.appendChild(c);});
+
+const stages=['monitor','catalyst','analyst','action'];
+function setStage(k,cls,info){const el=document.querySelector(`.stage[data-k="${k}"]`);el.className='stage '+cls;if(info!=null)el.querySelector('.s-i').textContent=info;}
+
+async function scan(){
+  const btn=document.getElementById('scan'); const err=document.getElementById('err');
+  const res=document.getElementById('result'); const pipe=document.getElementById('pipe');
+  err.textContent=''; res.innerHTML=''; pipe.style.display='flex';
+  stages.forEach(s=>setStage(s,'',''));
+  btn.disabled=true; btn.textContent='Scanning…';
+  const syms=document.getElementById('symbols').value.split(',').map(s=>s.trim()).filter(Boolean);
+  // animate stages while the request runs
+  let i=0; setStage('monitor','active','working…');
+  const tick=setInterval(()=>{ if(i<stages.length-1){setStage(stages[i],'done','✓');i++;setStage(stages[i],'active','working…');} },1400);
+  try{
+    const r=await fetch('/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbols:syms})});
+    clearInterval(tick); stages.forEach(s=>setStage(s,'done','✓'));
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    render(await r.json());
+  }catch(e){clearInterval(tick); err.textContent='Scan failed: '+e.message;}
+  finally{btn.disabled=false; btn.textContent='Scan Now';}
+}
+document.getElementById('scan').onclick=scan;
+
+function render(d){
+  const a=d.assessment||{}; const stocks=(a.stocks||[]).slice().sort((x,y)=>y.risk_score-x.risk_score);
+  const c=d.counts||{}; const score=a.portfolio_risk_score||0;
+  const rc = score>=75?RC.critical:score>=55?RC.high:score>=35?RC.medium:RC.low;
+  let html=`<div class="card" style="margin-top:16px">
+    <div class="summary">
+      <div class="ring" style="--p:${score};--rc:${rc}"><div><b>${score}</b><small>RISK</small></div></div>
+      <div><div class="headline">${esc(a.headline||'No notable smart-money risk today.')}</div>
+      <div class="counts"><span><b>${c.alert||0}</b> alerts</span><span><b>${c.watch||0}</b> watches</span><span><b>${stocks.length}</b> flagged</span></div></div>
+    </div></div>`;
+  if(stocks.length){
+    html+='<div class="grid">';
+    for(const s of stocks){
+      const col=RC[s.risk_level]||RC.low;
+      html+=`<div class="stk" style="border-left-color:${col}">
+        <div class="stk-h"><div><div class="sym">${esc(s.symbol)}</div><div class="score">risk score ${s.risk_score}/100</div></div>
+        <span class="badge" style="background:${col}22;color:${col}">${esc(s.risk_level)}</span></div>
+        <div class="thesis">${esc(s.thesis||'')}</div>
+        <div class="sigs">${(s.key_signals||[]).map(x=>`<span class="sig">${esc(x)}</span>`).join('')}</div>
+        ${s.catalyst?`<div class="cat"><b>Catalyst:</b> ${esc(s.catalyst)}</div>`:''}
+      </div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('result').innerHTML=html;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+</script>
+</body>
+</html>

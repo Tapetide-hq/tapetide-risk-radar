@@ -30,3 +30,8 @@ FIRESTORE_DATABASE: str = _get("FIRESTORE_DATABASE", "(default)")
 RISK_REGISTER_COLLECTION: str = _get("RISK_REGISTER_COLLECTION", "risk_register")
 SCAN_HISTORY_COLLECTION: str = _get("SCAN_HISTORY_COLLECTION", "scan_history")
 PORTFOLIO_COLLECTION: str = _get("PORTFOLIO_COLLECTION", "portfolios")
+
+# --- BigQuery (analytics mirror of the risk register) ----------------------
+BQ_DATASET: str = _get("BQ_DATASET", "risk_radar")
+BQ_TABLE: str = _get("BQ_TABLE", "risk_register")
+BQ_ENABLED: bool = _get("BQ_ENABLED", "TRUE").upper() == "TRUE"

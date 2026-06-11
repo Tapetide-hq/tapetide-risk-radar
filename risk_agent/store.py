@@ -13,6 +13,15 @@ from typing import Any
 from . import settings
 
 _client = None
+_bq = None
+
+
+def _bq_client():
+    global _bq
+    if _bq is None:
+        from google.cloud import bigquery  # lazy (needs creds)
+        _bq = bigquery.Client(project=settings.GCP_PROJECT or None)
+    return _bq
 
 
 def _db():
@@ -90,4 +99,33 @@ def save_assessment(
             "created_at": now,
         })
         written.append(doc_id)
+    _mirror_to_bigquery(user_id, assessment, now)
     return written
+
+
+def _mirror_to_bigquery(user_id: str, assessment: dict[str, Any], now) -> None:
+    """Best-effort stream of risk-register rows to BigQuery for analytics.
+
+    Never raises — analytics must not break the agent pipeline.
+    """
+    if not settings.BQ_ENABLED:
+        return
+    try:
+        rows = [{
+            "user_id": user_id,
+            "symbol": s["symbol"],
+            "risk_level": s.get("risk_level"),
+            "risk_score": s.get("risk_score"),
+            "thesis": s.get("thesis"),
+            "key_signals": s.get("key_signals", []),
+            "catalyst": s.get("catalyst", ""),
+            "recommended_review": s.get("recommended_review", False),
+            "trade_date": _today(),
+            "created_at": now.isoformat(),
+        } for s in assessment.get("stocks", [])]
+        if not rows:
+            return
+        table = f"{settings.GCP_PROJECT}.{settings.BQ_DATASET}.{settings.BQ_TABLE}"
+        _bq_client().insert_rows_json(table, rows)
+    except Exception:
+        pass

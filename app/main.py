@@ -9,13 +9,18 @@ Routes:
 
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from risk_agent import settings, store
 from risk_agent.pipeline import run_risk_radar
 
 app = FastAPI(title="Tapetide Smart-Money Risk Radar")
+
+_STATIC = os.path.join(os.path.dirname(__file__), "static")
 
 # Demo fallback portfolio when no stored portfolios exist yet.
 DEFAULT_WATCHLIST = ["ADANIENT", "ADANIGREEN", "RELIANCE", "JPPOWER", "RAYMOND"]
@@ -24,6 +29,11 @@ DEFAULT_WATCHLIST = ["ADANIENT", "ADANIGREEN", "RELIANCE", "JPPOWER", "RAYMOND"]
 class ScanRequest(BaseModel):
     user_id: str = "demo"
     symbols: list[str] = Field(min_length=1, max_length=100)
+
+
+@app.get("/")
+def home() -> FileResponse:
+    return FileResponse(os.path.join(_STATIC, "index.html"))
 
 
 @app.get("/health")

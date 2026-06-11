@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="640" viewBox="0 0 1120 640" font-family="Inter,Segoe UI,system-ui,sans-serif">
+  <defs>
+    <style>
+      .bg{fill:#0a0f0d}
+      .panel{fill:#101714;stroke:#1e2a25;stroke-width:1.5;rx:14}
+      .gcp{fill:#0d1411;stroke:#1d3a30;stroke-width:1.5}
+      .brand{fill:#0EA882}
+      .t{fill:#e8efe9;font-size:15px;font-weight:600}
+      .s{fill:#8aa39a;font-size:12px}
+      .tag{fill:#9fe3cd;font-size:11px}
+      .h{fill:#e8efe9;font-size:20px;font-weight:700}
+      .lbl{fill:#6f877d;font-size:11px}
+      .arrow{stroke:#2c4339;stroke-width:2;fill:none;marker-end:url(#a)}
+      .arrowb{stroke:#0EA882;stroke-width:2.2;fill:none;marker-end:url(#ab)}
+    </style>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2c4339"/></marker>
+    <marker id="ab" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#0EA882"/></marker>
+  </defs>
+
+  <rect class="bg" width="1120" height="640"/>
+  <circle cx="34" cy="38" r="7" class="brand"/>
+  <text x="50" y="36" class="h">Tapetide Smart-Money Risk Radar</text>
+  <text x="50" y="57" class="s">Autonomous multi-agent system · Google Cloud native · Track 1 (Build)</text>
+
+  <!-- Triggers -->
+  <rect x="30" y="100" width="190" height="120" rx="14" class="panel"/>
+  <text x="48" y="128" class="t">Triggers</text>
+  <text x="48" y="152" class="s">Cloud Scheduler</text>
+  <text x="48" y="170" class="lbl">08:15 &amp; 17:00 IST (cron)</text>
+  <text x="48" y="196" class="s">On-demand</text>
+  <text x="48" y="214" class="lbl">Demo UI · &quot;Scan now&quot;</text>
+
+  <!-- Cloud Run pipeline -->
+  <rect x="270" y="80" width="560" height="300" rx="16" class="panel"/>
+  <text x="292" y="108" class="t">Cloud Run · ADK multi-agent app</text>
+  <text x="292" y="128" class="lbl">in-process A2A handoff</text>
+
+  <g>
+    <rect x="292" y="146" width="240" height="64" rx="11" class="gcp"/>
+    <text x="308" y="172" class="t">1 · Monitor</text>
+    <text x="308" y="192" class="s">pulls smart-money signals</text>
+
+    <rect x="568" y="146" width="240" height="64" rx="11" class="gcp"/>
+    <text x="584" y="172" class="t">2 · Catalyst</text>
+    <text x="584" y="192" class="s">Gemini + Google Search</text>
+
+    <rect x="292" y="232" width="240" height="64" rx="11" class="gcp"/>
+    <text x="308" y="258" class="t">3 · Analyst</text>
+    <text x="308" y="278" class="s">Gemini · structured output</text>
+
+    <rect x="568" y="232" width="240" height="64" rx="11" class="gcp"/>
+    <text x="584" y="258" class="t">4 · Action</text>
+    <text x="584" y="278" class="s">writes risk register</text>
+  </g>
+  <text x="292" y="334" class="tag">Vertex AI · Gemini 2.5 Flash · Secret Manager</text>
+  <text x="292" y="354" class="lbl">structured outputs prevent pipeline breakage</text>
+
+  <!-- Data provider -->
+  <rect x="270" y="430" width="260" height="120" rx="14" class="panel"/>
+  <text x="288" y="458" class="t">Market Data Provider API</text>
+  <text x="288" y="480" class="s">external · API-key auth</text>
+  <text x="288" y="504" class="lbl">6 institutional-flow signals:</text>
+  <text x="288" y="522" class="lbl">F&amp;O ban · delivery · block deals</text>
+  <text x="288" y="538" class="lbl">MTF · SLBM · promoter pledge</text>
+
+  <!-- State -->
+  <rect x="880" y="100" width="210" height="120" rx="14" class="gcp"/>
+  <text x="898" y="128" class="t">Firestore</text>
+  <text x="898" y="150" class="s">risk register</text>
+  <text x="898" y="168" class="s">scan history · portfolios</text>
+  <text x="898" y="196" class="lbl">durable, queryable alerts</text>
+
+  <rect x="880" y="260" width="210" height="100" rx="14" class="gcp"/>
+  <text x="898" y="288" class="t">BigQuery</text>
+  <text x="898" y="310" class="s">risk_radar.risk_register</text>
+  <text x="898" y="330" class="lbl">portfolio risk analytics</text>
+
+  <!-- arrows -->
+  <path class="arrowb" d="M220,160 L264,160"/>
+  <path class="arrow" d="M532,178 L562,178"/>
+  <path class="arrow" d="M688,210 L688,228"/>
+  <path class="arrow" d="M568,264 L538,264"/>
+  <path class="arrowb" d="M412,210 L412,228" />
+  <path class="arrowb" d="M400,380 L400,426"/>
+  <text x="416" y="410" class="lbl">scan</text>
+  <path class="arrowb" d="M812,260 L876,180"/>
+  <path class="arrowb" d="M812,290 L876,300"/>
+  <text x="600" y="600" class="lbl">Gemini · ADK · Cloud Run · Firestore · BigQuery · Secret Manager · Cloud Scheduler · Google Search grounding</text>
+</svg>
